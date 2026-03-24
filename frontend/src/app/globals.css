@@ -1,0 +1,494 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════════════════════════
+   DEEVO CORTEX — INTELLIGENCE DASHBOARD THEME
+   Dark, premium, executive. Not startup. Not toy.
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  --cortex-bg: #08090e;
+  --cortex-panel: #0d0f16;
+  --cortex-panel-raised: #111420;
+  --cortex-border: #1a1d2a;
+  --cortex-border-subtle: #14161f;
+  --cortex-accent: #3b82f6;
+  --cortex-green: #10b981;
+  --cortex-red: #ef4444;
+  --cortex-amber: #f59e0b;
+  --cortex-text: #e5e7eb;
+  --cortex-muted: #6b7280;
+  --cortex-purple: #8b5cf6;
+  --cortex-cyan: #06b6d4;
+  --sidebar-width: 240px;
+}
+
+body {
+  background-color: var(--cortex-bg);
+  color: var(--cortex-text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Scrollbar ──────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #1a1d2a; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #2a2d3a; }
+
+/* ─── Core Panel ─────────────────────────────────────── */
+.panel {
+  background: var(--cortex-panel);
+  border: 1px solid var(--cortex-border);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+}
+.panel-hover { transition: border-color 0.2s, box-shadow 0.2s; }
+.panel-hover:hover {
+  border-color: rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 24px rgba(59, 130, 246, 0.03);
+}
+
+/* Intel panel — slightly raised */
+.intel-panel {
+  background: var(--cortex-panel);
+  border: 1px solid var(--cortex-border);
+  border-radius: 0.75rem;
+}
+
+/* ─── Severity Indicators ────────────────────────────── */
+.severity-critical { border-left: 3px solid var(--cortex-red); }
+.severity-high { border-left: 3px solid #f97316; }
+.severity-medium { border-left: 3px solid var(--cortex-amber); }
+.severity-low { border-left: 3px solid var(--cortex-green); }
+
+/* ─── Risk Level Badges ──────────────────────────────── */
+.risk-critical { background: rgba(239, 68, 68, 0.12); color: #fca5a5; }
+.risk-high { background: rgba(249, 115, 22, 0.12); color: #fdba74; }
+.risk-medium { background: rgba(245, 158, 11, 0.12); color: #fcd34d; }
+.risk-low { background: rgba(16, 185, 129, 0.12); color: #6ee7b7; }
+.risk-indicator-high { background: rgba(249, 115, 22, 0.15); color: #fb923c; }
+
+/* ─── Section Title ──────────────────────────────────── */
+.section-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #9ca3af;
+}
+
+/* ─── Trend ──────────────────────────────────────────── */
+.trend-up { color: #fca5a5; }
+.trend-down { color: #6ee7b7; }
+.trend-stable { color: #6b7280; }
+
+/* ─── Animations ─────────────────────────────────────── */
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+.pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+
+@keyframes gauge-fill { from { stroke-dashoffset: 175.9; } }
+.gauge-ring { animation: gauge-fill 1.2s ease-out forwards; }
+
+/* ─── Sidebar ────────────────────────────────────────── */
+.nav-active {
+  background: rgba(59, 130, 246, 0.08);
+  border-right: 2px solid var(--cortex-accent);
+  color: white;
+}
+
+/* ─── HERO SECTION ───────────────────────────────────── */
+.hero-section {
+  background: linear-gradient(180deg, #0d1117 0%, var(--cortex-bg) 100%);
+  border: 1px solid var(--cortex-border);
+  border-radius: 1rem;
+  padding: 1.5rem 2rem;
+}
+
+.hero-icon-ring {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-insight-strip {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--cortex-border-subtle);
+  border-radius: 0.5rem;
+}
+
+.hero-mode-btn {
+  padding: 0.375rem 1rem;
+  border-radius: 0.375rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #6b7280;
+  transition: all 0.15s;
+  cursor: pointer;
+}
+.hero-mode-btn:hover {
+  color: #9ca3af;
+  background: rgba(255, 255, 255, 0.02);
+}
+.hero-mode-active {
+  background: rgba(59, 130, 246, 0.08) !important;
+  border-color: rgba(59, 130, 246, 0.2) !important;
+  color: #93c5fd !important;
+}
+
+.hero-analyze-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  color: #93c5fd;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.hero-analyze-btn:hover {
+  background: rgba(59, 130, 246, 0.18);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+.hero-analyze-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── SIGNAL CARDS ───────────────────────────────────── */
+.signal-card {
+  background: var(--cortex-panel);
+  border: 1px solid var(--cortex-border);
+  border-radius: 0.625rem;
+  padding: 0.875rem 1rem;
+  transition: border-color 0.15s;
+}
+.signal-card:hover {
+  border-color: rgba(59, 130, 246, 0.15);
+}
+
+/* ─── CAUSAL FLOW ────────────────────────────────────── */
+.causal-block {
+  flex: 1;
+  min-width: 0;
+  padding: 1rem 1.25rem;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cortex-border);
+  background: var(--cortex-panel);
+  transition: border-color 0.15s;
+}
+.causal-block:hover { border-color: rgba(255, 255, 255, 0.06); }
+
+.causal-blue { border-left: 3px solid #3b82f6; }
+.causal-cyan { border-left: 3px solid #06b6d4; }
+.causal-amber { border-left: 3px solid #f59e0b; }
+.causal-orange { border-left: 3px solid #f97316; }
+.causal-red { border-left: 3px solid #ef4444; }
+
+.causal-tag-blue { color: #60a5fa; }
+.causal-tag-cyan { color: #22d3ee; }
+.causal-tag-amber { color: #fbbf24; }
+.causal-tag-orange { color: #fb923c; }
+.causal-tag-red { color: #f87171; }
+
+.causal-step-number {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ─── SCENARIO CARDS ─────────────────────────────────── */
+.scenario-card {
+  background: var(--cortex-panel);
+  border: 1px solid var(--cortex-border);
+  border-radius: 0.625rem;
+  padding: 1rem;
+}
+.scenario-emerald { border-top: 2px solid #10b981; }
+.scenario-amber { border-top: 2px solid #f59e0b; }
+.scenario-red { border-top: 2px solid #ef4444; }
+
+/* ─── GCC ROWS ───────────────────────────────────────── */
+.gcc-row {
+  display: flex;
+  align-items: center;
+  padding: 0.625rem 1rem;
+  transition: background 0.1s;
+}
+.gcc-row:hover { background: rgba(255, 255, 255, 0.015); }
+.gcc-row-active { background: rgba(59, 130, 246, 0.04); }
+
+/* ─── RECOMMENDATION CARDS ───────────────────────────── */
+.rec-card {
+  border-radius: 0.625rem;
+  padding: 1rem 1.25rem;
+  transition: border-color 0.15s;
+}
+.rec-card:hover {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ─── DECISION HIGHLIGHT ─────────────────────────────── */
+.decision-highlight {
+  border-left: 3px solid #f59e0b;
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.04) 0%, var(--cortex-panel) 100%);
+}
+
+/* ─── GRAPH NODE COLORS ──────────────────────────────── */
+.node-macro { fill: #3b82f6; }
+.node-insurance { fill: #f59e0b; }
+.node-portfolio { fill: #10b981; }
+.node-metric { fill: #8b5cf6; }
+
+/* ─── LOADING SPINNER ────────────────────────────────── */
+.cortex-spinner {
+  border: 2px solid rgba(59, 130, 246, 0.1);
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── UTILITY ────────────────────────────────────────── */
+.bg-cortex-bg { background-color: var(--cortex-bg); }
+.bg-cortex-panel { background-color: var(--cortex-panel); }
+.border-cortex-border { border-color: var(--cortex-border); }
+.text-cortex-muted { color: var(--cortex-muted); }
+.text-cortex-accent { color: var(--cortex-accent); }
+.bg-cortex-accent { background-color: var(--cortex-accent); }
+.text-cortex-green { color: var(--cortex-green); }
+.bg-cortex-green { background-color: var(--cortex-green); }
+.text-cortex-red { color: var(--cortex-red); }
+.bg-cortex-red { background-color: var(--cortex-red); }
+
+/* ═══════════════════════════════════════════════════════════
+   INTERACTION INTELLIGENCE LAYER
+   Controls how the user THINKS inside the system.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── CONTEXT BAR ────────────────────────────────────── */
+.context-bar {
+  background: rgba(13, 15, 22, 0.6);
+  border: 1px solid var(--cortex-border-subtle);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  backdrop-filter: blur(8px);
+}
+
+/* ─── GUIDED FLOW BAR ────────────────────────────────── */
+.guided-flow-bar {
+  background: var(--cortex-panel);
+  border: 1px solid var(--cortex-border);
+  border-radius: 0.625rem;
+  padding: 0.625rem 1rem;
+}
+
+.flow-step {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.375rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.flow-step:hover { color: #9ca3af; }
+
+.flow-step-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 0.5625rem;
+  font-weight: 600;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.flow-step-active {
+  color: #93c5fd !important;
+  background: rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.2);
+}
+.flow-step-active .flow-step-num {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: #60a5fa;
+}
+
+.flow-step-completed {
+  color: #6ee7b7 !important;
+}
+.flow-step-completed .flow-step-num {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.25);
+  color: #6ee7b7;
+}
+
+.flow-step-pending {
+  color: #374151;
+}
+
+/* ─── DECISION MODE TOGGLE ───────────────────────────── */
+.decision-mode-toggle {
+  display: flex;
+  align-items: center;
+  background: var(--cortex-panel);
+  border: 1px solid var(--cortex-border);
+  border-radius: 0.625rem;
+  padding: 0.5rem 1rem;
+}
+
+.mode-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.875rem;
+  border-radius: 0.375rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.mode-btn:hover { color: #9ca3af; background: rgba(255,255,255,0.02); }
+
+.mode-btn-active {
+  color: #e5e7eb !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ─── ACTION DOCK ────────────────────────────────────── */
+.action-dock {
+  background: var(--cortex-panel);
+  border: 1px solid var(--cortex-border);
+  border-radius: 0.625rem;
+  border-left: 3px solid #ef4444;
+}
+
+/* ─── INSIGHT PROMPT ─────────────────────────────────── */
+.insight-prompt {
+  border-radius: 0.625rem;
+  padding: 0.875rem 1rem;
+}
+
+/* ─── TOP DRIVERS ────────────────────────────────────── */
+.top-drivers-card {
+  background: var(--cortex-panel);
+  border: 1px solid var(--cortex-border);
+  border-radius: 0.625rem;
+  padding: 1rem;
+}
+
+/* ─── FOCUS GLOW (Attention Control) ─────────────────── */
+.focus-glow {
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.15), 0 0 24px rgba(59, 130, 246, 0.06);
+  transition: box-shadow 0.3s;
+}
+.focus-glow-warning {
+  box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.15), 0 0 24px rgba(245, 158, 11, 0.06);
+}
+.focus-glow-critical {
+  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.15), 0 0 24px rgba(239, 68, 68, 0.06);
+}
+
+/* ─── DE-EMPHASIS (Attention Control) ────────────────── */
+.de-emphasis {
+  opacity: 0.4;
+  transition: opacity 0.3s;
+}
+.de-emphasis:hover { opacity: 0.7; }
+
+/* ═══════════════════════════════════════════════════════════
+   AI DECISION ORCHESTRATOR LAYER
+   The brain above all layers. Reads → Prioritizes → Decides.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── ORCHESTRATOR SUMMARY ──────────────────────────── */
+.orchestrator-summary-panel {
+  background: linear-gradient(180deg, rgba(13, 15, 22, 0.8) 0%, var(--cortex-panel) 100%);
+  border: 1px solid var(--cortex-border);
+  border-radius: 0.625rem;
+  padding: 0.875rem 1rem;
+  position: relative;
+}
+.orchestrator-summary-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.15), transparent);
+}
+
+/* ─── WHY NOW PANEL ─────────────────────────────────── */
+.why-now-panel {
+  background: var(--cortex-panel);
+  border: 1px solid var(--cortex-border);
+  border-radius: 0.625rem;
+  padding: 1rem;
+}
+
+/* ─── NEXT ACTIONS ──────────────────────────────────── */
+.next-actions-panel {
+  background: var(--cortex-panel);
+  border: 1px solid var(--cortex-border);
+  border-radius: 0.625rem;
+  padding: 0.875rem;
+}
+
+/* ─── DECISION MODE BADGE ───────────────────────────── */
+.decision-mode-badge {
+  display: inline-flex;
+  flex-direction: column;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--cortex-border);
+  background: var(--cortex-panel);
+}
+
+/* ─── FOCUS DIRECTIVE ───────────────────────────────── */
+.focus-directive-card {
+  background: var(--cortex-panel);
+  border: 1px solid var(--cortex-border);
+  border-radius: 0.625rem;
+  padding: 1rem 1.25rem;
+}
+
+/* ─── ESCALATION PULSE ──────────────────────────────── */
+@keyframes escalation-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+  50% { box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.08); }
+}
+.escalation-active {
+  animation: escalation-pulse 2s ease-in-out infinite;
+}

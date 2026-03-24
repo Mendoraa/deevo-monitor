@@ -1,0 +1,18 @@
+{
+  "name": "deevo-graph",
+  "version": "2.0.0",
+  "description": "Deevo Cortex — GCC Economic Graph Intelligence Engine (Phase 2+3)",
+  "main": "dist/engine/scenario-runner.js",
+  "types": "dist/types/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "npx tsx tests/hormuz.spec.ts && npx tsx tests/refinery.spec.ts && npx tsx tests/sanctions.spec.ts",
+    "test:hormuz": "npx tsx tests/hormuz.spec.ts",
+    "test:refinery": "npx tsx tests/refinery.spec.ts",
+    "test:sanctions": "npx tsx tests/sanctions.spec.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "tsx": "^4.7.0"
+  }
+}

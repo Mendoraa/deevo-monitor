@@ -1,0 +1,68 @@
+{
+  "market": {
+    "code": "KWT",
+    "name": "Kuwait",
+    "currency": "KWD",
+    "oil_dependency": 0.85,
+    "trade_openness": 0.40,
+    "fiscal_buffer": 0.80,
+    "inflation_sensitivity": 0.40,
+    "insurance_penetration": 0.012,
+    "regulatory_body": "IRU",
+    "primary_lines": ["motor", "medical", "marine"]
+  },
+  "sample_signals": [
+    {"signal_key": "oil_price", "signal_value": 78.5, "signal_category": "macro", "source_name": "bloomberg", "source_type": "api"},
+    {"signal_key": "inflation_rate", "signal_value": 3.8, "signal_category": "macro", "source_name": "cbk_report", "source_type": "manual"},
+    {"signal_key": "interest_rate", "signal_value": 4.25, "signal_category": "macro", "source_name": "cbk_policy", "source_type": "manual"},
+    {"signal_key": "credit_growth", "signal_value": 5.2, "signal_category": "macro", "source_name": "cbk_report", "source_type": "manual"},
+    {"signal_key": "government_spending", "signal_value": 8.5, "signal_category": "macro", "source_name": "mof_budget", "source_type": "manual"},
+    {"signal_key": "real_estate_index", "signal_value": 4.2, "signal_category": "macro", "source_name": "nbk_report", "source_type": "manual"},
+    {"signal_key": "trade_volume", "signal_value": 3.5, "signal_category": "macro", "source_name": "customs", "source_type": "api"},
+    {"signal_key": "repair_cost_inflation", "signal_value": 12.5, "signal_category": "insurance", "source_name": "garage_network", "source_type": "manual"},
+    {"signal_key": "claims_frequency", "signal_value": 1.45, "signal_category": "insurance", "source_name": "claims_system", "source_type": "api"},
+    {"signal_key": "claims_severity", "signal_value": 7.8, "signal_category": "insurance", "source_name": "claims_system", "source_type": "api"},
+    {"signal_key": "reinsurance_pressure", "signal_value": 42.0, "signal_category": "insurance", "source_name": "reinsurer", "source_type": "manual"},
+    {"signal_key": "premium_adequacy", "signal_value": 65.0, "signal_category": "insurance", "source_name": "actuarial", "source_type": "manual"},
+    {"signal_key": "loss_ratio", "signal_value": 72.5, "signal_category": "portfolio", "source_name": "finance_system", "source_type": "api"},
+    {"signal_key": "policy_lapse_rate", "signal_value": 4.2, "signal_category": "portfolio", "source_name": "policy_system", "source_type": "api"},
+    {"signal_key": "fraud_alert_rate", "signal_value": 8.5, "signal_category": "insurance", "source_name": "fraud_system", "source_type": "api"}
+  ],
+  "sample_prediction": {
+    "assessment_id": "assess_sample_001",
+    "market_code": "KWT",
+    "portfolio_key": "motor_retail",
+    "run_type": "on_demand",
+    "scores": {
+      "market_stress_score": 38,
+      "claims_pressure_score": 56,
+      "fraud_exposure_score": 11,
+      "underwriting_risk_score": 32,
+      "portfolio_stability_score": 34
+    },
+    "risk_level": "Medium",
+    "top_drivers": ["claims_severity", "loss_ratio", "repair_cost_inflation", "oil_price"],
+    "confidence_score": 0.81
+  },
+  "sample_outcome": {
+    "prediction_id": "assess_sample_001",
+    "actual_loss_ratio": 71.2,
+    "actual_claims_frequency": 1.18,
+    "actual_claims_severity": 6.9,
+    "actual_fraud_findings": 14,
+    "actual_lapse_rate": 0.04,
+    "actual_underwriting_shift": 0.15,
+    "observed_start_date": "2026-03-24",
+    "observed_end_date": "2026-04-24"
+  },
+  "sample_calibration_case": {
+    "market_code": "KWT",
+    "prediction_id": "assess_sample_001",
+    "mode": "semi_auto",
+    "expected_result": {
+      "edges_calibrated": 24,
+      "direction_errors": ["fraud_exposure_score"],
+      "good_predictions": ["claims_pressure_score", "portfolio_stability_score"]
+    }
+  }
+}

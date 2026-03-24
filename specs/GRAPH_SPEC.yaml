@@ -1,0 +1,340 @@
+# Kuwait Motor Adaptive Risk Engine — Canonical Graph Specification
+# This is the single source of truth for graph structure.
+
+market:
+  code: KWT
+  name: Kuwait
+  currency: KWD
+  oil_dependency: 0.85
+  trade_openness: 0.40
+  fiscal_buffer: 0.80
+  inflation_sensitivity: 0.40
+  insurance_penetration: 0.012
+  regulatory_body: IRU
+  primary_lines: [motor, medical, marine]
+
+# ─── Nodes ─────────────────────────────────────────────────────
+# 27 nodes across 4 categories + 5 output scores
+
+nodes:
+  # Macro (8)
+  - node_key: oil_price
+    label: Oil Price
+    node_type: macro
+
+  - node_key: inflation_rate
+    label: Inflation Rate
+    node_type: macro
+
+  - node_key: interest_rate
+    label: Interest Rate
+    node_type: macro
+
+  - node_key: credit_growth
+    label: Credit Growth
+    node_type: macro
+
+  - node_key: government_spending
+    label: Government Spending
+    node_type: macro
+
+  - node_key: real_estate_index
+    label: Real Estate Index
+    node_type: macro
+
+  - node_key: trade_volume
+    label: Trade Volume
+    node_type: macro
+
+  - node_key: fx_rate
+    label: FX Rate
+    node_type: macro
+
+  # Insurance (8)
+  - node_key: claims_frequency
+    label: Claims Frequency
+    node_type: insurance
+
+  - node_key: claims_severity
+    label: Claims Severity
+    node_type: insurance
+
+  - node_key: repair_cost_inflation
+    label: Repair Cost Inflation
+    node_type: insurance
+
+  - node_key: medical_inflation
+    label: Medical Inflation
+    node_type: insurance
+
+  - node_key: fraud_cluster_density
+    label: Fraud Cluster Density
+    node_type: insurance
+
+  - node_key: underwriting_drift
+    label: Underwriting Drift
+    node_type: insurance
+
+  - node_key: reinsurance_pressure
+    label: Reinsurance Pressure
+    node_type: insurance
+
+  - node_key: premium_adequacy
+    label: Premium Adequacy
+    node_type: insurance
+
+  # Portfolio (6)
+  - node_key: loss_ratio
+    label: Loss Ratio
+    node_type: portfolio
+
+  - node_key: policy_lapse_risk
+    label: Policy Lapse Risk
+    node_type: portfolio
+
+  - node_key: suspicious_provider_concentration
+    label: Suspicious Provider Concentration
+    node_type: portfolio
+
+  - node_key: high_risk_segment_growth
+    label: High Risk Segment Growth
+    node_type: portfolio
+
+  - node_key: pricing_adequacy_gap
+    label: Pricing Adequacy Gap
+    node_type: portfolio
+
+  - node_key: garage_network_risk
+    label: Garage Network Risk
+    node_type: portfolio
+
+  # Output Score Targets (5)
+  - node_key: market_stress_signal
+    label: Market Stress Signal
+    node_type: metric
+
+  - node_key: claims_pressure_signal
+    label: Claims Pressure Signal
+    node_type: metric
+
+  - node_key: fraud_exposure_signal
+    label: Fraud Exposure Signal
+    node_type: metric
+
+  - node_key: underwriting_risk_signal
+    label: Underwriting Risk Signal
+    node_type: metric
+
+  - node_key: portfolio_stability_signal
+    label: Portfolio Stability Signal
+    node_type: metric
+
+# ─── Edges ─────────────────────────────────────────────────────
+# 38 edges with direction, type, and base weight
+
+edges:
+  # Macro → Insurance
+  - source: oil_price
+    target: repair_cost_inflation
+    relationship: amplifies
+    weight: 0.60
+
+  - source: oil_price
+    target: claims_severity
+    relationship: amplifies
+    weight: 0.45
+
+  - source: inflation_rate
+    target: repair_cost_inflation
+    relationship: amplifies
+    weight: 0.75
+
+  - source: inflation_rate
+    target: medical_inflation
+    relationship: amplifies
+    weight: 0.80
+
+  - source: inflation_rate
+    target: claims_severity
+    relationship: amplifies
+    weight: 0.55
+
+  - source: interest_rate
+    target: credit_growth
+    relationship: constrains
+    weight: 0.50
+
+  - source: credit_growth
+    target: high_risk_segment_growth
+    relationship: amplifies
+    weight: 0.45
+
+  - source: government_spending
+    target: real_estate_index
+    relationship: amplifies
+    weight: 0.55
+
+  - source: real_estate_index
+    target: claims_frequency
+    relationship: amplifies
+    weight: 0.30
+
+  - source: trade_volume
+    target: claims_frequency
+    relationship: affects
+    weight: 0.25
+
+  # Insurance → Insurance
+  - source: repair_cost_inflation
+    target: claims_severity
+    relationship: amplifies
+    weight: 0.80
+
+  - source: claims_frequency
+    target: fraud_cluster_density
+    relationship: amplifies
+    weight: 0.55
+
+  - source: claims_severity
+    target: loss_ratio
+    relationship: amplifies
+    weight: 0.75
+
+  - source: claims_frequency
+    target: loss_ratio
+    relationship: amplifies
+    weight: 0.70
+
+  - source: fraud_cluster_density
+    target: loss_ratio
+    relationship: amplifies
+    weight: 0.40
+
+  - source: medical_inflation
+    target: claims_severity
+    relationship: amplifies
+    weight: 0.65
+
+  - source: reinsurance_pressure
+    target: premium_adequacy
+    relationship: constrains
+    weight: 0.50
+
+  - source: underwriting_drift
+    target: pricing_adequacy_gap
+    relationship: amplifies
+    weight: 0.65
+
+  # Portfolio
+  - source: loss_ratio
+    target: underwriting_drift
+    relationship: triggers
+    weight: 0.60
+
+  - source: suspicious_provider_concentration
+    target: fraud_cluster_density
+    relationship: amplifies
+    weight: 0.70
+
+  - source: garage_network_risk
+    target: fraud_cluster_density
+    relationship: amplifies
+    weight: 0.55
+
+  - source: high_risk_segment_growth
+    target: claims_frequency
+    relationship: amplifies
+    weight: 0.50
+
+  - source: pricing_adequacy_gap
+    target: loss_ratio
+    relationship: amplifies
+    weight: 0.55
+
+  # → Score Targets (15 edges feeding 5 output nodes)
+  - source: oil_price
+    target: market_stress_signal
+    relationship: affects
+    weight: 0.50
+
+  - source: inflation_rate
+    target: market_stress_signal
+    relationship: affects
+    weight: 0.45
+
+  - source: credit_growth
+    target: market_stress_signal
+    relationship: affects
+    weight: 0.35
+
+  - source: claims_frequency
+    target: claims_pressure_signal
+    relationship: affects
+    weight: 0.55
+
+  - source: claims_severity
+    target: claims_pressure_signal
+    relationship: affects
+    weight: 0.60
+
+  - source: repair_cost_inflation
+    target: claims_pressure_signal
+    relationship: affects
+    weight: 0.45
+
+  - source: fraud_cluster_density
+    target: fraud_exposure_signal
+    relationship: affects
+    weight: 0.70
+
+  - source: suspicious_provider_concentration
+    target: fraud_exposure_signal
+    relationship: affects
+    weight: 0.55
+
+  - source: garage_network_risk
+    target: fraud_exposure_signal
+    relationship: affects
+    weight: 0.40
+
+  - source: underwriting_drift
+    target: underwriting_risk_signal
+    relationship: affects
+    weight: 0.60
+
+  - source: pricing_adequacy_gap
+    target: underwriting_risk_signal
+    relationship: affects
+    weight: 0.55
+
+  - source: premium_adequacy
+    target: underwriting_risk_signal
+    relationship: affects
+    weight: 0.45
+
+  - source: loss_ratio
+    target: portfolio_stability_signal
+    relationship: affects
+    weight: 0.65
+
+  - source: policy_lapse_risk
+    target: portfolio_stability_signal
+    relationship: affects
+    weight: 0.40
+
+  - source: high_risk_segment_growth
+    target: portfolio_stability_signal
+    relationship: affects
+    weight: 0.35
+
+# ─── Kuwait Regional Sensitivity ───────────────────────────────
+regional_sensitivity:
+  KWT:
+    oil_price: 1.6
+    repair_cost_inflation: 1.4
+    claims_frequency: 1.2
+    government_spending: 1.2
+    inflation_rate: 0.8
+    credit_growth: 0.9
+    trade_volume: 0.8
+    real_estate_index: 0.9
