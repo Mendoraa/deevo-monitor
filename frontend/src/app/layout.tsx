@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import TopBar from "@/components/TopBar";
+import { MonitorModeProvider } from "@/lib/monitorMode";
 
 export const metadata: Metadata = {
   title: "Deevo Cortex — Decision Intelligence Engine",
@@ -17,11 +18,13 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className="min-h-screen antialiased">
-        <Sidebar />
-        <div className="ml-[240px] min-h-screen flex flex-col">
-          <TopBar />
-          <main className="flex-1 p-6 pb-12">{children}</main>
-        </div>
+        <MonitorModeProvider>
+          <Sidebar />
+          <div className="ml-[240px] min-h-screen flex flex-col">
+            <TopBar />
+            <main className="flex-1 p-6 pb-12">{children}</main>
+          </div>
+        </MonitorModeProvider>
       </body>
     </html>
   );
