@@ -1,145 +1,138 @@
 "use client";
 
-import { Users, TrendingUp, TrendingDown, Minus, Brain, ShieldAlert, Briefcase, Building, User, Search } from "lucide-react";
+import { useMemo } from "react";
+import {
+  TrendingUp, TrendingDown, Minus, Brain, ShieldAlert,
+  Building, User, Search, AlertTriangle, ChevronRight, Zap,
+} from "lucide-react";
 import { useMonitorMode } from "@/lib/monitorMode";
+import {
+  evaluateAllAgents,
+  CURRENT_SIGNALS,
+  type AgentReactionOutput,
+  type AgentId,
+} from "@/lib/agentEngine";
 
-// ─── Agent Personas ───────────────────────────────────────────
-interface AgentReaction {
-  agentId: string;
-  persona: string;
-  personaAr: string;
-  icon: typeof Users;
-  accentColor: string;
-  reaction: string;
-  riskImpact: "increase" | "decrease" | "neutral";
-  riskDelta: string;
-  behaviorChange: string;
-  confidence: number;
-}
-
-// Simulated reactions to current state: "Oil at $89.5 + Claims pressure rising"
-const AGENT_REACTIONS: AgentReaction[] = [
-  {
-    agentId: "AGT-INVESTOR",
-    persona: "Investor",
-    personaAr: "مستثمر",
-    icon: TrendingUp,
-    accentColor: "emerald",
-    reaction: "Oil surge → rotate into energy stocks, reduce exposure to consumer discretionary. Insurance sector exposure under review due to rising claims trajectory.",
-    riskImpact: "increase",
-    riskDelta: "+8%",
-    behaviorChange: "Portfolio rebalancing toward energy sector, hedging GCC insurance exposure",
-    confidence: 0.82,
-  },
-  {
-    agentId: "AGT-REGULATOR",
-    persona: "Government Regulator",
-    personaAr: "جهة رقابية",
-    icon: Building,
-    accentColor: "blue",
-    reaction: "Subsidy pressure increasing. If oil stays above $88 for 30d, fiscal buffer draw-down triggers consumer support review. Regulatory response expected within 60 days.",
-    riskImpact: "increase",
-    riskDelta: "+5%",
-    behaviorChange: "Monitoring subsidy thresholds, preparing consumer protection measures",
-    confidence: 0.75,
-  },
-  {
-    agentId: "AGT-RISK-MGR",
-    persona: "Insurance Risk Manager",
-    personaAr: "مدير المخاطر",
-    icon: ShieldAlert,
-    accentColor: "red",
-    reaction: "Claims severity trending +11% QoQ. Repair cost inflation amplifying faster than pricing can respond. Reserve adequacy review triggered — IBNR likely understated.",
-    riskImpact: "increase",
-    riskDelta: "+12%",
-    behaviorChange: "Triggering reserve review, tightening underwriting guidelines, escalating to C-suite",
-    confidence: 0.91,
-  },
-  {
-    agentId: "AGT-CONSUMER",
-    persona: "Retail Consumer",
-    personaAr: "مستهلك",
-    icon: User,
-    accentColor: "cyan",
-    reaction: "Financial stress rising from fuel costs. Deferred vehicle maintenance increases accident probability. Policy renewal sensitivity heightened — price elasticity at 0.7.",
-    riskImpact: "increase",
-    riskDelta: "+6%",
-    behaviorChange: "Deferring maintenance, shopping for cheaper coverage, increasing claims disputes",
-    confidence: 0.78,
-  },
-  {
-    agentId: "AGT-FRAUD",
-    persona: "Fraud Actor",
-    personaAr: "جهة احتيال",
-    icon: Search,
-    accentColor: "amber",
-    reaction: "Economic stress creates opportunity. Staged collision probability rises 18% when consumer stress index > 60. Garage network exploitation window open.",
-    riskImpact: "increase",
-    riskDelta: "+18%",
-    behaviorChange: "Increasing staged collision attempts, exploiting stressed garage networks",
-    confidence: 0.72,
-  },
-];
-
-const ACCENT_STYLES: Record<string, { bg: string; border: string; text: string }> = {
-  emerald: { bg: "rgba(16,185,129,0.05)", border: "rgba(16,185,129,0.15)", text: "text-emerald-400" },
-  blue: { bg: "rgba(59,130,246,0.05)", border: "rgba(59,130,246,0.15)", text: "text-blue-400" },
-  red: { bg: "rgba(239,68,68,0.05)", border: "rgba(239,68,68,0.15)", text: "text-red-400" },
-  cyan: { bg: "rgba(6,182,212,0.05)", border: "rgba(6,182,212,0.15)", text: "text-cyan-400" },
-  amber: { bg: "rgba(245,158,11,0.05)", border: "rgba(245,158,11,0.15)", text: "text-amber-400" },
+// ─── Icon + Style Maps ────────────────────────────────────────
+const AGENT_ICONS: Record<AgentId, typeof TrendingUp> = {
+  investor: TrendingUp,
+  regulator: Building,
+  risk_manager: ShieldAlert,
+  consumer: User,
+  fraud_actor: Search,
 };
 
-function AgentCard({ agent }: { agent: AgentReaction }) {
-  const styles = ACCENT_STYLES[agent.accentColor] || ACCENT_STYLES.blue;
-  const Icon = agent.icon;
-  const ImpactIcon = agent.riskImpact === "increase" ? TrendingUp : agent.riskImpact === "decrease" ? TrendingDown : Minus;
-  const impactColor = agent.riskImpact === "increase" ? "text-red-400" : agent.riskImpact === "decrease" ? "text-emerald-400" : "text-neutral-500";
+const AGENT_ACCENTS: Record<AgentId, { bg: string; border: string; text: string }> = {
+  investor: { bg: "rgba(16,185,129,0.05)", border: "rgba(16,185,129,0.15)", text: "text-emerald-400" },
+  regulator: { bg: "rgba(59,130,246,0.05)", border: "rgba(59,130,246,0.15)", text: "text-blue-400" },
+  risk_manager: { bg: "rgba(239,68,68,0.05)", border: "rgba(239,68,68,0.15)", text: "text-red-400" },
+  consumer: { bg: "rgba(6,182,212,0.05)", border: "rgba(6,182,212,0.15)", text: "text-cyan-400" },
+  fraud_actor: { bg: "rgba(245,158,11,0.05)", border: "rgba(245,158,11,0.15)", text: "text-amber-400" },
+};
+
+const STRESS_COLORS: Record<string, string> = {
+  normal: "text-emerald-400",
+  stressed: "text-amber-400",
+  panic: "text-red-400",
+};
+
+function AgentCard({ agent }: { agent: AgentReactionOutput }) {
+  const Icon = AGENT_ICONS[agent.agentId] || AlertTriangle;
+  const accent = AGENT_ACCENTS[agent.agentId];
+  const impactColor = agent.riskContribution > 0 ? "text-red-400" : agent.riskContribution < 0 ? "text-emerald-400" : "text-neutral-500";
+  const ImpactIcon = agent.riskContribution > 0 ? TrendingUp : agent.riskContribution < 0 ? TrendingDown : Minus;
 
   return (
     <div
       className="rounded-lg p-4 transition-all duration-200 hover:translate-y-[-1px]"
-      style={{ background: styles.bg, border: `1px solid ${styles.border}` }}
+      style={{ background: accent.bg, border: `1px solid ${accent.border}` }}
     >
-      {/* Agent header */}
+      {/* Header */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <Icon className={`w-4 h-4 ${styles.text}`} />
+          <Icon className={`w-4 h-4 ${accent.text}`} />
           <div>
-            <span className="text-xs font-semibold text-white">{agent.persona}</span>
-            <span className="text-[9px] text-neutral-600 ml-1.5" dir="rtl">{agent.personaAr}</span>
+            <span className="text-xs font-semibold text-white">{agent.identity.label}</span>
+            <span className="text-[9px] text-neutral-600 ml-1.5" dir="rtl">{agent.identity.labelAr}</span>
           </div>
         </div>
-        <div className="flex items-center gap-1">
-          <ImpactIcon className={`w-3 h-3 ${impactColor}`} />
-          <span className={`text-[10px] font-bold tabular-nums ${impactColor}`}>
-            {agent.riskDelta}
+        <div className="flex items-center gap-1.5">
+          <span className={`text-[9px] font-medium uppercase ${STRESS_COLORS[agent.stressState]}`}>
+            {agent.stressState}
           </span>
+          <div className="flex items-center gap-0.5">
+            <ImpactIcon className={`w-3 h-3 ${impactColor}`} />
+            <span className={`text-[10px] font-bold tabular-nums ${impactColor}`}>
+              {agent.riskContribution > 0 ? "+" : ""}{agent.riskContribution}%
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Reaction */}
-      <p className="text-[10px] text-neutral-400 leading-relaxed mb-2">
-        {agent.reaction}
-      </p>
-
-      {/* Behavior change */}
-      <div className="flex items-start gap-1.5 mb-1.5">
-        <Brain className="w-3 h-3 text-purple-400 mt-0.5 flex-shrink-0" />
-        <span className="text-[9px] text-purple-300/70">
-          {agent.behaviorChange}
+      {/* Stress meter */}
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-[8px] text-neutral-600 w-10">Stress</span>
+        <div className="flex-1 h-1 bg-neutral-800 rounded-full overflow-hidden">
+          <div
+            className={`h-full rounded-full transition-all duration-500 ${
+              agent.currentStressLevel >= 80 ? "bg-red-500" :
+              agent.currentStressLevel >= 50 ? "bg-amber-500" :
+              "bg-emerald-500"
+            }`}
+            style={{ width: `${agent.currentStressLevel}%` }}
+          />
+        </div>
+        <span className="text-[9px] text-neutral-500 tabular-nums w-6 text-right">
+          {agent.currentStressLevel}
         </span>
       </div>
 
+      {/* Active reaction */}
+      <p className="text-[10px] text-neutral-400 leading-relaxed mb-2">
+        {agent.activeReaction}
+      </p>
+
+      {/* Triggered rules */}
+      {agent.triggeredRules.length > 0 && (
+        <div className="space-y-1 mb-2">
+          {agent.triggeredRules.slice(0, 3).map((rule, idx) => (
+            <div key={idx} className="flex items-center gap-1.5">
+              <Zap className="w-2.5 h-2.5 text-amber-400" />
+              <span className="text-[9px] text-amber-300/70">{rule.action}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Scenario preview */}
+      <div className="mt-2 pt-2" style={{ borderTop: `1px solid ${accent.border}` }}>
+        <span className="text-[8px] text-neutral-600 uppercase tracking-wider">Scenario Reactions</span>
+        <div className="flex gap-2 mt-1">
+          {(["base", "elevated", "severe"] as const).map((branch) => {
+            const sr = agent.scenarioReactions[branch];
+            const branchColor = branch === "severe" ? "text-red-400" : branch === "elevated" ? "text-amber-400" : "text-emerald-400";
+            return (
+              <div key={branch} className="flex items-center gap-0.5">
+                <span className={`text-[8px] font-medium ${branchColor}`}>{branch}</span>
+                <span className={`text-[8px] tabular-nums ${branchColor}`}>
+                  {sr.riskDelta > 0 ? "+" : ""}{sr.riskDelta}%
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Confidence */}
-      <div className="flex items-center gap-1">
-        <span className="text-[8px] text-neutral-600">Confidence</span>
+      <div className="flex items-center gap-1 mt-1.5">
+        <span className="text-[8px] text-neutral-700">Confidence</span>
         <div className="flex-1 h-0.5 bg-neutral-800 rounded-full overflow-hidden">
           <div
             className="h-full rounded-full bg-neutral-500/50"
             style={{ width: `${agent.confidence * 100}%` }}
           />
         </div>
-        <span className="text-[8px] text-neutral-500 tabular-nums">
+        <span className="text-[8px] text-neutral-600 tabular-nums">
           {(agent.confidence * 100).toFixed(0)}%
         </span>
       </div>
@@ -150,34 +143,52 @@ function AgentCard({ agent }: { agent: AgentReaction }) {
 export default function ReactionIntelligencePanel() {
   const { mode } = useMonitorMode();
 
-  // Show in intelligence and kuwait modes, partial in global
+  // Evaluate all agents against current signals
+  const agentResults = useMemo(() => evaluateAllAgents(CURRENT_SIGNALS), []);
+
   if (mode === "economic") return null;
 
-  const agents = mode === "global"
-    ? AGENT_REACTIONS.slice(0, 3) // compact: top 3 in global
-    : AGENT_REACTIONS;
+  const visibleAgents = mode === "global"
+    ? agentResults.slice(0, 3)
+    : agentResults;
+
+  const totalRiskContribution = agentResults.reduce((sum, a) => sum + a.riskContribution, 0);
+  const panicAgents = agentResults.filter((a) => a.stressState === "panic").length;
+  const stressedAgents = agentResults.filter((a) => a.stressState === "stressed").length;
 
   return (
     <section>
-      <div className="flex items-center gap-2 mb-3">
-        <div className="w-1 h-4 bg-red-500 rounded-full" />
-        <h3 className="text-[10px] uppercase tracking-widest text-neutral-500 font-semibold">
-          Reaction Intelligence Layer
-        </h3>
-        <span className="text-[9px] text-neutral-700">
-          Multi-agent behavioral simulation
-        </span>
-        <div className="ml-auto flex items-center gap-1.5 px-2 py-0.5 rounded-md"
-          style={{ background: "rgba(168,85,247,0.06)", border: "1px solid rgba(168,85,247,0.12)" }}>
-          <Brain className="w-3 h-3 text-purple-400" />
-          <span className="text-[9px] text-purple-300 font-medium">AI Simulated</span>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <div className="w-1 h-4 bg-red-500 rounded-full" />
+          <h3 className="text-[10px] uppercase tracking-widest text-neutral-500 font-semibold">
+            Reaction Intelligence Layer
+          </h3>
+          <span className="text-[9px] text-neutral-700">
+            {agentResults.length} agents · {agentResults.reduce((s, a) => s + a.triggeredRules.length, 0)} rules triggered
+          </span>
+        </div>
+        <div className="flex items-center gap-3">
+          {panicAgents > 0 && (
+            <span className="text-[9px] text-red-400 font-medium">{panicAgents} panic</span>
+          )}
+          {stressedAgents > 0 && (
+            <span className="text-[9px] text-amber-400 font-medium">{stressedAgents} stressed</span>
+          )}
+          <div className="flex items-center gap-1 px-2 py-0.5 rounded-md"
+            style={{ background: "rgba(168,85,247,0.06)", border: "1px solid rgba(168,85,247,0.12)" }}>
+            <Brain className="w-3 h-3 text-purple-400" />
+            <span className="text-[9px] text-purple-300 font-medium">
+              Net Impact: {totalRiskContribution > 0 ? "+" : ""}{totalRiskContribution}%
+            </span>
+          </div>
         </div>
       </div>
 
       <div className={`grid gap-3 ${
-        agents.length <= 3 ? "grid-cols-1 lg:grid-cols-3" : "grid-cols-1 lg:grid-cols-2 xl:grid-cols-3"
+        visibleAgents.length <= 3 ? "grid-cols-1 lg:grid-cols-3" : "grid-cols-1 lg:grid-cols-2 xl:grid-cols-3"
       }`}>
-        {agents.map((agent) => (
+        {visibleAgents.map((agent) => (
           <AgentCard key={agent.agentId} agent={agent} />
         ))}
       </div>

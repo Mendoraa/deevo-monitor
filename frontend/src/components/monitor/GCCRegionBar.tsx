@@ -1,6 +1,6 @@
 "use client";
 
-import { useMonitorMode } from "@/lib/monitorMode";
+import { useMonitorMode, isCountryMode } from "@/lib/monitorMode";
 import { MOCK_REGIONS, type RegionData } from "@/lib/mock-data";
 
 const REGION_ACTIVE_STYLES: Record<string, string> = {
@@ -15,8 +15,8 @@ const REGION_ACTIVE_STYLES: Record<string, string> = {
 export default function GCCRegionBar() {
   const { mode, config } = useMonitorMode();
 
-  // Only show in GCC or Kuwait mode
-  if (mode !== "gcc" && mode !== "kuwait") return null;
+  // Show in GCC or any country mode
+  if (mode !== "gcc" && !isCountryMode(mode)) return null;
 
   const regions = MOCK_REGIONS;
   const focusedRegions = config.regionFilter;

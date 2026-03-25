@@ -2,7 +2,7 @@
 
 import { MapPin, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { MOCK_REGIONS, type RegionData } from "@/lib/mock-data";
-import { useMonitorMode } from "@/lib/monitorMode";
+import { useMonitorMode, isCountryMode } from "@/lib/monitorMode";
 
 // ─── GCC Country Risk Data ────────────────────────────────────
 interface CountryRisk {
@@ -97,7 +97,7 @@ function CountryCard({ country }: { country: CountryRisk }) {
   const colors = RISK_COLORS[country.riskLevel] || RISK_COLORS.medium;
   const TrendIcon = country.trend === "up" ? TrendingUp : country.trend === "down" ? TrendingDown : Minus;
   const { mode } = useMonitorMode();
-  const isHighlighted = mode === "kuwait" && country.code === "KWT";
+  const isHighlighted = isCountryMode(mode) && country.code === config.countryCode;
 
   return (
     <div
@@ -140,11 +140,11 @@ function CountryCard({ country }: { country: CountryRisk }) {
 export default function GCCOverviewPanel() {
   const { mode } = useMonitorMode();
 
-  // Only show in GCC or Global mode (compact in other modes)
-  if (mode !== "gcc" && mode !== "global" && mode !== "kuwait") return null;
+  // Show in GCC, Global, or any country mode
+  if (mode !== "gcc" && mode !== "global" && !isCountryMode(mode)) return null;
 
-  const countries = mode === "kuwait"
-    ? GCC_RISK_DATA.filter((c) => c.code === "KWT")
+  const countries = isCountryMode(mode)
+    ? GCC_RISK_DATA.filter((c) => c.code === config.countryCode)
     : GCC_RISK_DATA;
 
   return (
@@ -152,12 +152,12 @@ export default function GCCOverviewPanel() {
       <div className="flex items-center gap-2 mb-3">
         <div className="w-1 h-4 bg-emerald-500 rounded-full" />
         <h3 className="text-[10px] uppercase tracking-widest text-neutral-500 font-semibold">
-          {mode === "kuwait" ? "Kuwait Strategic Posture" : "GCC Strategic Risk Overview"}
+          {isCountryMode(mode) ? `${config.label} Strategic Posture` : "GCC Strategic Risk Overview"}
         </h3>
       </div>
 
       <div className={`grid gap-2 ${
-        mode === "kuwait" ? "grid-cols-1" : "grid-cols-2 lg:grid-cols-3 xl:grid-cols-6"
+        isCountryMode(mode) ? "grid-cols-1" : "grid-cols-2 lg:grid-cols-3 xl:grid-cols-6"
       }`}>
         {countries.map((c) => (
           <CountryCard key={c.code} country={c} />
