@@ -96,7 +96,7 @@ const RISK_COLORS: Record<string, { bg: string; border: string; text: string }> 
 function CountryCard({ country }: { country: CountryRisk }) {
   const colors = RISK_COLORS[country.riskLevel] || RISK_COLORS.medium;
   const TrendIcon = country.trend === "up" ? TrendingUp : country.trend === "down" ? TrendingDown : Minus;
-  const { mode } = useMonitorMode();
+  const { mode, config } = useMonitorMode();
   const isHighlighted = isCountryMode(mode) && country.code === config.countryCode;
 
   return (
@@ -138,7 +138,7 @@ function CountryCard({ country }: { country: CountryRisk }) {
 }
 
 export default function GCCOverviewPanel() {
-  const { mode } = useMonitorMode();
+  const { mode, config } = useMonitorMode();
 
   // Show in GCC, Global, or any country mode
   if (mode !== "gcc" && mode !== "global" && !isCountryMode(mode)) return null;
