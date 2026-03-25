@@ -8,6 +8,7 @@ import {
   evaluateScenarios,
   type ScenarioDef,
 } from "@/lib/scenarioEngine";
+import { evaluateAllAgents, CURRENT_SIGNALS } from "@/lib/agentEngine";
 import {
   AlertTriangle,
   TrendingUp,
@@ -151,6 +152,7 @@ function ScenarioCard({ scenario }: { scenario: ScenarioDef }) {
 
 export default function ScenariosPage() {
   const scenarioResults = evaluateScenarios();
+  const agentResults = evaluateAllAgents(CURRENT_SIGNALS);
 
   return (
     <div className="h-screen w-screen overflow-hidden relative" style={{ background: "var(--cx-void)" }}>
@@ -257,7 +259,7 @@ export default function ScenariosPage() {
                 </tr>
               </thead>
               <tbody>
-                {scenarioResults.map((agent) => (
+                {agentResults.map((agent) => (
                   <tr key={agent.agentId} style={{ borderBottom: "1px solid var(--cx-border)" }}>
                     <td className="px-4 py-2">
                       <div className="flex items-center gap-2">
@@ -273,8 +275,8 @@ export default function ScenariosPage() {
                         </span>
                       </div>
                     </td>
-                    <td className="px-4 py-2 text-[9px] text-muted">{agent.scenarioReaction?.reaction || "Monitoring"}</td>
-                    <td className="px-4 py-2 text-[9px] text-muted">{agent.scenarioReaction?.behaviorShift || "Adjusting"}</td>
+                    <td className="px-4 py-2 text-[9px] text-muted">{agent.scenarioReactions.base.reaction}</td>
+                    <td className="px-4 py-2 text-[9px] text-muted">{agent.scenarioReactions.elevated.behaviorShift}</td>
                     <td className="px-4 py-2 text-[9px] text-muted">
                       {agent.stressState === "panic" ? "Emergency response" : agent.stressState === "stressed" ? "Elevated protocols" : "Standard ops"}
                     </td>
@@ -282,10 +284,10 @@ export default function ScenariosPage() {
                       <span
                         className="text-[10px] font-bold font-mono"
                         style={{
-                          color: agent.currentStress >= 80 ? "#ef4444" : agent.currentStress >= 50 ? "#f59e0b" : "#10b981",
+                          color: agent.currentStressLevel >= 80 ? "#ef4444" : agent.currentStressLevel >= 50 ? "#f59e0b" : "#10b981",
                         }}
                       >
-                        {agent.currentStress}
+                        {agent.currentStressLevel}
                       </span>
                     </td>
                   </tr>
