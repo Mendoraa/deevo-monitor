@@ -47,3 +47,4 @@ export default function CommandCenter() {
     </div>
   );
 }
+// Platform v4.0 — Intelligence Operating System
